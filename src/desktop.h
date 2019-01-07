@@ -109,6 +109,7 @@ FmDesktop*  fm_desktop_new          (GdkScreen* screen, gint monitor);
 FmDesktop*  fm_desktop_get          (gint screen, gint monitor);
 
 void        fm_desktop_preference   (GtkAction *act, FmDesktop *desktop);
+void        fm_desktop_reconfigure  (GtkAction *act, FmDesktop *desktop);
 void        fm_desktop_wallpaper_changed(FmDesktop *desktop);
 
 void fm_desktop_manager_init(gint on_screen);

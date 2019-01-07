@@ -92,9 +92,8 @@ msgid "Sho_w \"Devices\" folder on the desktop"
 msgstr "_Show \"My Documents\" icon on desktop"
 
 #: ../data/ui/desktop-pref.glade.h:16
-#, fuzzy
 msgid "Show \"_Trash Can\" folder on the desktop"
-msgstr "Show \"_Rubbish Bin\" icon on desktop"
+msgstr "Show \"Waste_basket\" icon on desktop"
 
 #: ../data/ui/desktop-pref.glade.h:17
 #, fuzzy
@@ -206,20 +205,17 @@ msgid "Co_nfirm before deleting files"
 msgstr "Co_nfirm before deleting files"
 
 #: ../data/ui/pref.glade.h:9
-#, fuzzy
 msgid "_Move deleted files to \"trash can\" instead of erasing from disk"
-msgstr "_Move deleted files to \"Rubbish Bin\" instead of erasing from disk"
+msgstr "_Move deleted files to \"Wastebasket\" instead of erasing from disk"
 
 #: ../data/ui/pref.glade.h:10
-#, fuzzy
 msgid "_Erase files on removable media instead of \"trash can\" creation"
-msgstr "_Erase files on removable media instead of \"Rubbish Bin\" creation"
+msgstr "_Erase files on removable media instead of \"Wastebasket\" creation"
 
 # Two Alt key options, Which one?
 #: ../data/ui/pref.glade.h:11
-#, fuzzy
 msgid "Confi_rm before moving files into \"trash can\""
-msgstr "Confi_rm before moving files into \"Rubbish Bi_n\""
+msgstr "Confi_rm before moving files into \"Wastebasket\""
 
 #: ../data/ui/pref.glade.h:12
 msgid "Don't ask options on _launch executable file"
@@ -363,7 +359,7 @@ msgstr "_Desktop"
 
 #: ../data/ui/pref.glade.h:50 ../src/main-win-ui.c:238
 msgid "_Trash Can"
-msgstr "_Rubbish Bin"
+msgstr "Waste_basket"
 
 #: ../data/ui/pref.glade.h:51
 msgid "_Filesystem Root"
@@ -742,7 +738,7 @@ msgstr ""
 
 #: ../src/main-win-ui.c:203
 msgid "Move to _Trash"
-msgstr ""
+msgstr "Move to Waste_basket"
 
 #: ../src/main-win-ui.c:205
 msgid "Copy Pat_h(s)"
@@ -862,7 +858,7 @@ msgstr "Pa_rent Folder"
 
 #: ../src/main-win-ui.c:235
 msgid "Go to parent Folder"
-msgstr "Go to parent Folder"
+msgstr "Go to parent folder"
 
 #: ../src/main-win-ui.c:236
 msgid "H_ome Folder"
@@ -884,7 +880,7 @@ msgstr "Go to parent Folder"
 
 #: ../src/main-win-ui.c:238
 msgid "Open trash can"
-msgstr ""
+msgstr "Open Wastebasket"
 
 #: ../src/main-win-ui.c:239
 msgid "Filesyste_m Root"
@@ -965,9 +961,8 @@ msgid "Open search dialog"
 msgstr "Open desktop preference dialogue"
 
 #: ../src/main-win-ui.c:254
-#, fuzzy
 msgid "_Run a Command in Current Folder..."
-msgstr "Reload current folder"
+msgstr "_Run Command in Current Folder..."
 
 #. Note to translators: "Mingle..." means "Do not put folders before files" but make the translation as short as possible, please!
 #: ../src/main-win-ui.c:271
@@ -1212,6 +1207,9 @@ msgstr "Turn off desktop manager if it‘s running"
 #: ../src/pcmanfm.c:85
 msgid "Open desktop preference dialog"
 msgstr "Open desktop preference dialogue"
+
+msgid "Reload desktop config file"
+msgstr "Reload desktop config file"
 
 #: ../src/pcmanfm.c:86
 msgid "Use --desktop option only for one screen"

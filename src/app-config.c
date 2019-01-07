@@ -535,6 +535,7 @@ static void fm_app_config_init(FmAppConfig *cfg)
     cfg->close_on_unmount = TRUE;
     cfg->maximized = FALSE;
     cfg->pathbar_mode_buttons = FALSE;
+    cfg->desktop_section.prefs_app = NULL;
 }
 
 
@@ -549,7 +550,6 @@ void fm_app_config_load_desktop_config(GKeyFile *kf, const char *group, FmDeskto
 
     if (!g_key_file_has_group(kf, group))
         return;
-
     /* set some defaults, assuming config is zeroed now */
     cfg->desktop_fg.red = cfg->desktop_fg.green = cfg->desktop_fg.blue = 65535;
 #if FM_CHECK_VERSION(1, 0, 2)
@@ -637,11 +637,18 @@ void fm_app_config_load_desktop_config(GKeyFile *kf, const char *group, FmDeskto
     }
 
     tmp = g_key_file_get_string(kf, group, "desktop_font", NULL);
-    g_free(cfg->desktop_font);
-    cfg->desktop_font = tmp;
+    if(tmp)
+    {
+        g_free(cfg->desktop_font);
+        cfg->desktop_font = tmp;
+    }
 
-    g_free(cfg->folder);
-    cfg->folder = g_key_file_get_string(kf, group, "folder", NULL);
+    tmp = g_key_file_get_string(kf, group, "folder", NULL);
+    if(tmp)
+    {
+        g_free(cfg->folder);
+        cfg->folder = tmp;
+    }
 
     fm_key_file_get_bool(kf, group, "show_wm_menu", &cfg->show_wm_menu);
     _parse_sort(kf, group, &cfg->desktop_sort_type, &cfg->desktop_sort_by);
@@ -650,6 +657,12 @@ void fm_app_config_load_desktop_config(GKeyFile *kf, const char *group, FmDeskto
     fm_key_file_get_bool(kf, group, "show_trash", &cfg->show_trash);
     fm_key_file_get_bool(kf, group, "show_mounts", &cfg->show_mounts);
 #endif
+    tmp = g_key_file_get_string(kf, group, "prefs_app", NULL);
+    if(tmp)
+    {
+        g_free(cfg->prefs_app);
+        cfg->prefs_app = tmp;
+    }
 }
 
 void fm_app_config_load_from_key_file(FmAppConfig* cfg, GKeyFile* kf)
@@ -841,6 +854,13 @@ void fm_app_config_load_from_profile(FmAppConfig* cfg, const char* name)
     else
     {
         g_free(path);
+        gchar *home = home_dir ();
+        if (home)
+        {
+            path = g_build_filename(home, ".config", "pcmanfm", name, "pcmanfm.conf", NULL);
+            g_free (home);
+        }
+        else
         path = g_build_filename(g_get_user_config_dir(), "pcmanfm", name, "pcmanfm.conf", NULL);
         if(g_key_file_load_from_file(kf, path, 0, NULL))
             fm_app_config_load_from_key_file(cfg, kf);
@@ -896,6 +916,7 @@ gboolean fm_app_config_get_config_for_path(FmPath *path, GtkSortType *mode,
     if (columns)
         *columns = app_config->columns;
 #endif
+    if (fm_config->cutdown_menus) return FALSE;
     fc = fm_folder_config_open(path);
     if (!fm_folder_config_is_empty(fc))
         _parse_config_for_path(fc, mode, by, view_mode, show_hidden, columns);
@@ -1070,6 +1091,7 @@ void fm_app_config_save_desktop_config(GString *buf, const char *group, FmDeskto
     g_string_append_printf(buf, "show_trash=%d\n", cfg->show_trash);
     g_string_append_printf(buf, "show_mounts=%d\n", cfg->show_mounts);
 #endif
+    if (cfg->prefs_app) g_string_append_printf(buf, "prefs_app=%s", cfg->prefs_app);
 }
 
 static void _save_choice(gpointer key, gpointer val, gpointer buf)
@@ -1091,6 +1113,13 @@ void fm_app_config_save_profile(FmAppConfig* cfg, const char* name)
     if(!name || !*name)
         name = "default";
 
+    gchar *home = home_dir ();
+    if (home)
+    {
+        dir_path = g_build_filename(home, ".config", "pcmanfm", name, NULL);
+        g_free (home);
+    }
+    else
     dir_path = g_build_filename(g_get_user_config_dir(), "pcmanfm", name, NULL);
     if(g_mkdir_with_parents(dir_path, 0700) != -1)
     {

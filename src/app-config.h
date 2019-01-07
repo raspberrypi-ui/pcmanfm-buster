@@ -93,6 +93,7 @@ typedef struct
     gboolean show_trash;
     gboolean show_mounts;
 #endif
+    char *prefs_app;
 } FmDesktopConfig;
 
 typedef struct
