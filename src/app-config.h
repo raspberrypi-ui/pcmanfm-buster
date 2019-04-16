@@ -93,7 +93,6 @@ typedef struct
     gboolean show_trash;
     gboolean show_mounts;
 #endif
-    char *prefs_app;
 } FmDesktopConfig;
 
 typedef struct
@@ -149,6 +148,7 @@ struct _FmAppConfig
 #if FM_CHECK_VERSION(1, 2, 0)
     char *home_path;
 #endif
+    char *prefs_app;
 
     /*char* su_cmd;*/
 

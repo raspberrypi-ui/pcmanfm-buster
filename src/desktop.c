@@ -5742,10 +5742,10 @@ void fm_desktop_preference(GtkAction *act, FmDesktop *desktop)
         return;
 
     // if an override preference app is set, launch it...
-    if (desktop->conf.prefs_app)
+    if (app_config->prefs_app)
     {
         char buffer[128];
-        sprintf (buffer, "%s &", desktop->conf.prefs_app);
+        sprintf (buffer, "%s &", app_config->prefs_app);
         system (buffer);
         return;
     }
