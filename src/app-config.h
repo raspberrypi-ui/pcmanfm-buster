@@ -149,6 +149,7 @@ struct _FmAppConfig
     char *home_path;
 #endif
     char *prefs_app;
+    gboolean common_bg;
 
     /*char* su_cmd;*/
 

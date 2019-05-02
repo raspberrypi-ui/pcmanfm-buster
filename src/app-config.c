@@ -536,6 +536,7 @@ static void fm_app_config_init(FmAppConfig *cfg)
     cfg->maximized = FALSE;
     cfg->pathbar_mode_buttons = FALSE;
     cfg->prefs_app = NULL;
+    cfg->common_bg = TRUE;
 }
 
 
@@ -805,6 +806,7 @@ void fm_app_config_load_from_key_file(FmAppConfig* cfg, GKeyFile* kf)
         g_free(cfg->prefs_app);
         cfg->prefs_app = tmp;
     }
+    fm_key_file_get_bool(kf, "ui", "common_bg", &cfg->common_bg);
 }
 
 void fm_app_config_load_from_profile(FmAppConfig* cfg, const char* name)
@@ -1202,6 +1204,7 @@ void fm_app_config_save_profile(FmAppConfig* cfg, const char* name)
         g_string_append_printf(buf, "show_statusbar=%d\n", cfg->show_statusbar);
         g_string_append_printf(buf, "pathbar_mode_buttons=%d\n", cfg->pathbar_mode_buttons);
         if (cfg->prefs_app) g_string_append_printf(buf, "prefs_app=%s", cfg->prefs_app);
+        g_string_append_printf(buf, "common_bg=%d\n", cfg->common_bg);
 
         path = g_build_filename(dir_path, "pcmanfm.conf", NULL);
         g_file_set_contents(path, buf->str, buf->len, NULL);

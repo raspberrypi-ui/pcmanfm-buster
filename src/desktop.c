@@ -191,6 +191,7 @@ static char* get_config_file(FmDesktop* desktop, gboolean create_dir)
             break;
     if(i >= n_screens)
         return NULL;
+    if (app_config->common_bg) i = 0;
     dir = pcmanfm_get_profile_dir(create_dir);
     path = g_strdup_printf("%s/desktop-items-%u.conf", dir, i);
     g_free(dir);
@@ -207,6 +208,7 @@ static char* get_sys_config_file (FmDesktop* desktop)
             break;
     if (i >= n_screens)
         return NULL;
+    if (app_config->common_bg) i = 0;
     dir = pcmanfm_get_system_profile_dir ();
     path = g_strdup_printf ("%s/desktop-items-%u.conf", dir, i);
     g_free (dir);
@@ -2154,6 +2156,7 @@ static void update_background(FmDesktop* desktop, int is_it)
     Display* xdisplay;
     Pixmap xpixmap;
     Window xroot;
+
     int screen_num = gdk_screen_get_number(screen);
 
     char *wallpaper;
@@ -2454,7 +2457,6 @@ static void update_background(FmDesktop* desktop, int is_it)
 
     gdk_window_invalidate_rect(window, NULL, TRUE);
 }
-
 
 /* ---------------------------------------------------------------------
     FmFolderModel signal handlers */
@@ -5880,7 +5882,13 @@ void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
         return;
 
     // reload the config file
-	load_config (desktop);
+    if (app_config->common_bg)
+    {
+        for (int i = 0; i < n_screens; i++)
+            if (desktops[i])
+                load_config (desktops[i]);
+    }
+    else load_config (desktop);
 
     // reload the font used for icon names
     fm_config_load_from_file (fm_config, NULL);
@@ -5934,7 +5942,13 @@ void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
 	}
 
     // update the desktop background
-	update_background(desktop, 0);
+    if (app_config->common_bg)
+    {
+        for (int i = 0; i < n_screens; i++)
+            if (desktops[i])
+                update_background (desktops[i], 0);
+    }
+    else update_background (desktop, 0);
 }
 
 /* ---------------------------------------------------------------------
