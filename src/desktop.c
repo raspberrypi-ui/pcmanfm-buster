@@ -5876,42 +5876,8 @@ void fm_desktop_preference(GtkAction *act, FmDesktop *desktop)
     gtk_window_present(desktop_pref_dlg);
 }
 
-void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
+void update_icons (FmDesktop *desktop)
 {
-    if (desktop == NULL)
-        return;
-
-    // reload the config file
-    if (app_config->common_bg)
-    {
-        for (int i = 0; i < n_screens; i++)
-            if (desktops[i])
-                load_config (desktops[i]);
-    }
-    else load_config (desktop);
-
-    // reload the font used for icon names
-    fm_config_load_from_file (fm_config, NULL);
-    if (fm_config->icon_font) g_free (fm_config->icon_font);
-    fm_config->icon_font = g_strdup (desktop->conf.desktop_font);
-    fm_folder_model_set_icon_size(desktop->model, fm_config->big_icon_size);
-    fm_config_emit_changed (fm_config, "big_icon_size");
-    fm_config_emit_changed (fm_config, "small_icon_size");
-    fm_config_emit_changed (fm_config, "thumbnail_size");
-    fm_config_emit_changed (fm_config, "pane_icon_size");
-
-	// update the display font
-	PangoFontDescription *font_desc = pango_font_description_from_string(desktop->conf.desktop_font);
-    if(font_desc)
-    {
-        PangoContext* pc = gtk_widget_get_pango_context((GtkWidget*)desktop);
-
-        pango_context_set_font_description(pc, font_desc);
-        pango_layout_context_changed(desktop->pl);
-        pango_font_description_free(font_desc);
-    }
-
-    // update icons
     if (desktop->model)
     {
 		if (documents && documents->fi)
@@ -5940,15 +5906,51 @@ void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
 				fm_folder_model_extra_file_remove(desktop->model, mount->fi);
 		}
 	}
+}
 
-    // update the desktop background
+void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
+{
+    if (desktop == NULL)
+        return;
+
+    // reload the font used for icon names
+    fm_config_load_from_file (fm_config, NULL);
+    if (fm_config->icon_font) g_free (fm_config->icon_font);
+    fm_config->icon_font = g_strdup (desktop->conf.desktop_font);
+    fm_folder_model_set_icon_size(desktop->model, fm_config->big_icon_size);
+    fm_config_emit_changed (fm_config, "big_icon_size");
+    fm_config_emit_changed (fm_config, "small_icon_size");
+    fm_config_emit_changed (fm_config, "thumbnail_size");
+    fm_config_emit_changed (fm_config, "pane_icon_size");
+
+	// update the display font
+	PangoFontDescription *font_desc = pango_font_description_from_string(desktop->conf.desktop_font);
+    if(font_desc)
+    {
+        PangoContext* pc = gtk_widget_get_pango_context((GtkWidget*)desktop);
+
+        pango_context_set_font_description(pc, font_desc);
+        pango_layout_context_changed(desktop->pl);
+        pango_font_description_free(font_desc);
+    }
+
+    // reload desktop-specific items and update
     if (app_config->common_bg)
     {
         for (int i = 0; i < n_screens; i++)
             if (desktops[i])
+            {
+                load_config (desktops[i]);
+                update_icons (desktops[i]);
                 update_background (desktops[i], 0);
+            }
     }
-    else update_background (desktop, 0);
+    else
+    {
+        load_config (desktop);
+        update_icons (desktop);
+        update_background (desktop, 0);
+    }
 }
 
 /* ---------------------------------------------------------------------
