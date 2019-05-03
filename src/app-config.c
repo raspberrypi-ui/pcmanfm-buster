@@ -536,7 +536,7 @@ static void fm_app_config_init(FmAppConfig *cfg)
     cfg->maximized = FALSE;
     cfg->pathbar_mode_buttons = FALSE;
     cfg->prefs_app = NULL;
-    cfg->common_bg = TRUE;
+    cfg->common_bg = FALSE;
 }
 
 
