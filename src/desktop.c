@@ -5935,21 +5935,14 @@ void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
     }
 
     // reload desktop-specific items and update
-    if (app_config->common_bg)
+    for (int i = 0; i < n_screens; i++)
     {
-        for (int i = 0; i < n_screens; i++)
-            if (desktops[i])
-            {
-                load_config (desktops[i]);
-                update_icons (desktops[i]);
-                update_background (desktops[i], 0);
-            }
-    }
-    else
-    {
-        load_config (desktop);
-        update_icons (desktop);
-        update_background (desktop, 0);
+        if (desktops[i])
+        {
+            load_config (desktops[i]);
+            update_icons (desktops[i]);
+            update_background (desktops[i], 0);
+        }
     }
 }
 
