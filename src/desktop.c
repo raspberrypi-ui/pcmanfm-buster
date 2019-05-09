@@ -748,7 +748,10 @@ static gboolean on_idle_extra_item_remove(gpointer user_data)
         _free_extra_item(item);
     }
     else
+    {
         g_warning("got unmount for unknown desktop item");
+        return TRUE;
+    }
     g_object_unref(mount);
     return FALSE;
 }
