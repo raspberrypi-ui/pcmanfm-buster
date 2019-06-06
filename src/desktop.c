@@ -5916,6 +5916,17 @@ void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
     if (desktop == NULL)
         return;
 
+    // reload desktop-specific items and update
+    for (int i = 0; i < n_screens; i++)
+    {
+        if (desktops[i])
+        {
+            load_config (desktops[i]);
+            update_icons (desktops[i]);
+            update_background (desktops[i], 0);
+        }
+    }
+
     // reload the font used for icon names
     fm_config_load_from_file (fm_config, NULL);
     if (fm_config->icon_font) g_free (fm_config->icon_font);
@@ -5935,17 +5946,6 @@ void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
         pango_context_set_font_description(pc, font_desc);
         pango_layout_context_changed(desktop->pl);
         pango_font_description_free(font_desc);
-    }
-
-    // reload desktop-specific items and update
-    for (int i = 0; i < n_screens; i++)
-    {
-        if (desktops[i])
-        {
-            load_config (desktops[i]);
-            update_icons (desktops[i]);
-            update_background (desktops[i], 0);
-        }
     }
 }
 
