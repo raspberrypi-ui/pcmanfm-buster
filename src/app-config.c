@@ -1203,7 +1203,7 @@ void fm_app_config_save_profile(FmAppConfig* cfg, const char* name)
         g_string_append_c(buf, '\n');
         g_string_append_printf(buf, "show_statusbar=%d\n", cfg->show_statusbar);
         g_string_append_printf(buf, "pathbar_mode_buttons=%d\n", cfg->pathbar_mode_buttons);
-        if (cfg->prefs_app) g_string_append_printf(buf, "prefs_app=%s", cfg->prefs_app);
+        if (cfg->prefs_app) g_string_append_printf(buf, "prefs_app=%s\n", cfg->prefs_app);
         g_string_append_printf(buf, "common_bg=%d\n", cfg->common_bg);
 
         path = g_build_filename(dir_path, "pcmanfm.conf", NULL);
