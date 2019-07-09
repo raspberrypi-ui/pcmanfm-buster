@@ -286,6 +286,47 @@ static void calc_item_size(FmDesktop* desktop, FmDesktopItem* item, GdkPixbuf* i
 /* unfortunately we cannot load the "*" together with items because
    otherwise we will update pango layout on each load_items() which
    is resource wasting so we load config file once more instead */
+
+static char* get_sys_global_config_file (void)
+{
+    char *dir, *path;
+
+    dir = pcmanfm_get_system_profile_dir ();
+    path = g_strdup_printf ("%s/pcmanfm.conf", dir);
+    g_free (dir);
+    return path;
+}
+
+static char* get_global_config_file(gboolean create_dir)
+{
+    char *dir, *path;
+
+    dir = pcmanfm_get_profile_dir(create_dir);
+    path = g_strdup_printf("%s/pcmanfm.conf", dir);
+    g_free(dir);
+    return path;
+}
+
+static void load_global_config (void)
+{
+    char* path;
+    GKeyFile* kf;
+
+    path = get_sys_global_config_file ();
+    kf = g_key_file_new();
+    if(g_key_file_load_from_file(kf, path, 0, NULL))
+        fm_app_config_load_from_key_file(app_config, kf);
+    g_free(path);
+    g_key_file_free(kf);
+
+    path = get_global_config_file (FALSE);
+    kf = g_key_file_new();
+    if(g_key_file_load_from_file(kf, path, 0, NULL))
+        fm_app_config_load_from_key_file(app_config, kf);
+    g_free(path);
+    g_key_file_free(kf);
+}
+
 static inline void load_config(FmDesktop* desktop)
 {
     char* path;
@@ -5916,6 +5957,9 @@ void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
     if (desktop == NULL)
         return;
 
+    // load global config to update common_bg flag
+    load_global_config ();
+
     // reload desktop-specific items and update
     for (int i = 0; i < n_screens; i++)
     {
@@ -5924,6 +5968,8 @@ void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
             load_config (desktops[i]);
             update_icons (desktops[i]);
             update_background (desktops[i], 0);
+            disconnect_model (desktops[i]);
+            connect_model (desktops[i], desktops[i]->conf.folder);
         }
     }
 
