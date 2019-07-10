@@ -5966,10 +5966,20 @@ void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
         if (desktops[i])
         {
             load_config (desktops[i]);
+            if (i)
+            {
+                if (app_config->common_bg)
+                {
+                    if (desktops[0]->conf.folder)
+                        fm_folder_model_set_folder (desktops[i]->model, fm_folder_from_path_name (desktops[0]->conf.folder));
+                    else
+                        fm_folder_model_set_folder (desktops[i]->model, fm_folder_from_path (fm_path_get_desktop ()));
+                }
+                else fm_folder_model_set_folder (desktops[i]->model, fm_folder_from_path_name (desktops[i]->conf.folder));
+                reload_items (desktops[i]);
+            }
             update_icons (desktops[i]);
             update_background (desktops[i], 0);
-            disconnect_model (desktops[i]);
-            connect_model (desktops[i], desktops[i]->conf.folder);
         }
     }
 
