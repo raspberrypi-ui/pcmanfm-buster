@@ -6246,21 +6246,17 @@ void fm_desktop_manager_finalize()
     pcmanfm_unref();
 }
 
-FmDesktop* fm_desktop_get(gint screen, gint monitor)
+FmDesktop* fm_desktop_get(void)
 {
-    if (n_screens < 1) return NULL;
-    else return desktops[0];
-    int i = 0, n = 0;
-    while(i < n_screens && n <= screen)
-    {
-        if(n == screen && desktops[i]->monitor == monitor)
-            return desktops[i];
-        i++;
-        if(i < n_screens &&
-           (desktops[i]->monitor == 0 || desktops[i]->monitor == -1))
-            n++;
-    }
-    return NULL;
+    GdkDisplay *dis = gdk_display_get_default ();
+    GdkScreen *scr;
+    int x, y, m;
+
+    gdk_display_get_pointer (dis, &scr, &x, &y, NULL);
+    m = x_mon_num (gdk_screen_get_monitor_at_point (scr, x, y));
+
+    if (m < n_screens) return desktops[m];
+    else return NULL;
 }
 
 void fm_desktop_wallpaper_changed(FmDesktop *desktop)

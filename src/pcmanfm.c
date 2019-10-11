@@ -341,8 +341,8 @@ gboolean pcmanfm_run(gint screen_num)
 
     if(!files_to_open)
     {
-        /* FIXME: use screen number from client and pointer position */
-        FmDesktop *desktop = fm_desktop_get(screen_num, 0);
+        /* Get the desktop on which the mouse pointer is currently displayed... */
+        FmDesktop *desktop = fm_desktop_get();
 
         /* Launch desktop manager */
         if(show_desktop)
