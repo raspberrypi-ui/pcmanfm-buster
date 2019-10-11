@@ -369,6 +369,12 @@ gboolean pcmanfm_run(gint screen_num)
             fm_edit_preference(GTK_WINDOW(desktop), show_pref - 1);
             return reset_options();
         }
+        else if(reconfigure)
+        {
+            fm_desktop_reconfigure(NULL);
+            reconfigure = FALSE;
+            return TRUE;
+        }
         else if(desktop == NULL)
         {
             /* ignore desktop-oriented commands if no desktop support */
@@ -384,12 +390,6 @@ gboolean pcmanfm_run(gint screen_num)
         {
             fm_desktop_preference(NULL, desktop);
             return reset_options();
-        }
-        else if(reconfigure)
-        {
-            fm_desktop_reconfigure(NULL, desktop);
-            reconfigure = FALSE;
-            return TRUE;
         }
         else if(wallpaper_mode || set_wallpaper)
         {

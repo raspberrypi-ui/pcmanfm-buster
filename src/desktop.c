@@ -6023,11 +6023,8 @@ void update_icons (FmDesktop *desktop)
 	}
 }
 
-void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
+void fm_desktop_reconfigure (GtkAction *act)
 {
-    if (desktop == NULL)
-        return;
-
     // load global config to update common_bg flag
     load_global_config ();
 
@@ -6047,29 +6044,27 @@ void fm_desktop_reconfigure (GtkAction *act, FmDesktop *desktop)
             }
             update_icons (desktops[i]);
             update_background (desktops[i], 0);
+
+            // update the display font
+            PangoFontDescription *font_desc = pango_font_description_from_string(desktops[i]->conf.desktop_font);
+            if(font_desc)
+            {
+                PangoContext* pc = gtk_widget_get_pango_context((GtkWidget*)desktops[i]);
+
+                pango_context_set_font_description(pc, font_desc);
+                pango_layout_context_changed(desktops[i]->pl);
+                pango_font_description_free(font_desc);
+            }
+
+            fm_folder_model_set_icon_size(desktops[i]->model, fm_config->big_icon_size);
         }
     }
 
-    // reload the font used for icon names
-    fm_config_load_from_file (fm_config, NULL);
-    if (fm_config->icon_font) g_free (fm_config->icon_font);
-    fm_config->icon_font = g_strdup (desktop->conf.desktop_font);
-    fm_folder_model_set_icon_size(desktop->model, fm_config->big_icon_size);
+    // reload icons
     fm_config_emit_changed (fm_config, "big_icon_size");
     fm_config_emit_changed (fm_config, "small_icon_size");
     fm_config_emit_changed (fm_config, "thumbnail_size");
     fm_config_emit_changed (fm_config, "pane_icon_size");
-
-	// update the display font
-	PangoFontDescription *font_desc = pango_font_description_from_string(desktop->conf.desktop_font);
-    if(font_desc)
-    {
-        PangoContext* pc = gtk_widget_get_pango_context((GtkWidget*)desktop);
-
-        pango_context_set_font_description(pc, font_desc);
-        pango_layout_context_changed(desktop->pl);
-        pango_font_description_free(font_desc);
-    }
 }
 
 /* ---------------------------------------------------------------------
