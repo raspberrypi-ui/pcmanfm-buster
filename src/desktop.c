@@ -250,6 +250,16 @@ int gdk_mon_num_for_desktop (FmDesktop *desk)
     return gdk_mon_num (1);
 }
 
+int monitor_at_pointer (void)
+{
+    GdkDisplay *dis = gdk_display_get_default ();
+    GdkScreen *scr;
+    int x, y, m;
+
+    gdk_display_get_pointer (dis, &scr, &x, &y, NULL);
+    return x_mon_num (gdk_screen_get_monitor_at_point (scr, x, y));
+}
+
 /* ---------------------------------------------------------------------
     Items management and common functions */
 
@@ -5862,7 +5872,7 @@ void fm_desktop_preference(GtkAction *act, FmDesktop *desktop)
     if (app_config->prefs_app)
     {
         char buffer[128];
-        sprintf (buffer, "%s &", app_config->prefs_app);
+        sprintf (buffer, "%s %d &", app_config->prefs_app, monitor_at_pointer ());
         system (buffer);
         return;
     }
@@ -6248,12 +6258,7 @@ void fm_desktop_manager_finalize()
 
 FmDesktop* fm_desktop_get(void)
 {
-    GdkDisplay *dis = gdk_display_get_default ();
-    GdkScreen *scr;
-    int x, y, m;
-
-    gdk_display_get_pointer (dis, &scr, &x, &y, NULL);
-    m = x_mon_num (gdk_screen_get_monitor_at_point (scr, x, y));
+    int m = monitor_at_pointer ();
 
     if (m < n_screens) return desktops[m];
     else return NULL;
