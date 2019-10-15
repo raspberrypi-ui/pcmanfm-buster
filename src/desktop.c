@@ -118,6 +118,9 @@ static gint pending_rename = 0;
 static guint ren_timer = 0;
 static guint ren_x, ren_y;
 
+#define MAX_MONS 4
+static GdkRectangle mon_sizes[MAX_MONS + 1];
+
 enum {
 #if N_FM_DND_DEST_DEFAULT_TARGETS > N_FM_DND_SRC_DEFAULT_TARGETS
     FM_DND_DEST_DESKTOP_ITEM = N_FM_DND_DEST_DEFAULT_TARGETS
@@ -209,23 +212,84 @@ static GSList *mounts = NULL;
  * Note that identical functions are used in lxpanel and pcmanfm.
  */
 
+void read_monitor_sizes (void)
+{
+    printf ("loading monitor size table\n");
+    for (int i = 0; i <= MAX_MONS; i++)
+    {
+        mon_sizes[i].width = 0;
+        mon_sizes[i].height = 0;
+        mon_sizes[i].x = 0;
+        mon_sizes[i].y = 0;
+    }
+
+    FILE *fp = popen ("xrandr --listmonitors", "r");
+    char *line = NULL;
+    int len = 0, mon, w, h, x, y;
+    while (getline (&line, &len, fp) != -1)
+    {
+        if (sscanf (line, " %d: %*s %d/%*dx%d/%*d+%d+%d", &mon, &w, &h, &x, &y) == 5)
+        {
+            printf ("mon %d w %d h %d x %d y %d\n", mon, w, h, x, y);
+            if (mon < MAX_MONS)
+            {
+                mon_sizes[mon].width = w;
+                mon_sizes[mon].height = h;
+                mon_sizes[mon].x = x;
+                mon_sizes[mon].y = y;
+            }
+            else g_critical ("Monitor number %d outside of range", mon);
+        }
+        line = NULL;
+        len = 0;
+    }
+    pclose (fp);
+}
+
 int gdk_mon_num (int x_mon_num)
 {
     GdkDisplay *disp = gdk_display_get_default ();
     GdkScreen *scr = gdk_display_get_screen (disp, 0);
     int prim = gdk_screen_get_primary_monitor (scr);
+    int nmons = gdk_screen_get_n_monitors (scr);
+    int i;
 
-    /* monitor 0 is always the primary monitor */
-    if (x_mon_num == 0) return prim;
+    if (nmons == 1) return 0;                   /* only one monitor, so always 0 */
+    if (x_mon_num == 0) return prim;            /* monitor 0 is always the primary monitor */
+    if (nmons == 2) return (prim == 0 ? 1 : 0); /* not the primary */
 
-    /* this will currently only return the secondary monitor, if there is one */
-    /* for some future world, this needs to compare co-ords against those from xrandr */
-    for (int i = 0; i < gdk_screen_get_n_monitors (scr); i++)
+    /* compare sizes and locations; only needed with more than 2 monitors... */
+
+    /* sanity check the table */
+    for (i = 0; i < MAX_MONS; i++)
     {
-        if (i != prim) return i;
+        if (mon_sizes[i].width == 0 && mon_sizes[i].height == 0) break;
     }
 
-    /* ... or -1 if there is only one monitor */
+    if (i == nmons)
+    {
+        for (i = 0; i < nmons; i++)
+        {
+            GdkRectangle geom;
+            gdk_screen_get_monitor_geometry (scr, i, &geom);
+            if (geom.x == mon_sizes[x_mon_num].x && geom.y == mon_sizes[x_mon_num].y &&
+                geom.width == mon_sizes[x_mon_num].width && geom.height == mon_sizes[x_mon_num].height)
+                    return i;
+        }
+     }
+
+    /* last chance - reload the table just in case */
+    read_monitor_sizes ();
+    for (i = 0; i < nmons; i++)
+    {
+        GdkRectangle geom;
+        gdk_screen_get_monitor_geometry (scr, i, &geom);
+        if (geom.x == mon_sizes[x_mon_num].x && geom.y == mon_sizes[x_mon_num].y &&
+            geom.width == mon_sizes[x_mon_num].width && geom.height == mon_sizes[x_mon_num].height)
+                return i;
+    }
+
+    /* can't match the monitor */
     return -1;
 }
 
@@ -234,11 +298,43 @@ int x_mon_num (int gdk_mon_num)
     GdkDisplay *disp = gdk_display_get_default ();
     GdkScreen *scr = gdk_display_get_screen (disp, 0);
     int prim = gdk_screen_get_primary_monitor (scr);
+    int nmons = gdk_screen_get_n_monitors (scr);
+    int i;
 
-    if (gdk_mon_num == prim) return 0;
+    if (nmons == 1) return 0;           /* only one monitor, so always 0 */
+    if (gdk_mon_num == prim) return 0;  /* monitor 0 is always the primary monitor */
+    if (nmons == 2) return 1;           /* because if it had been the primary, we wouldn't be here... */
 
-    if (gdk_screen_get_n_monitors (scr) > 1) return 1;
-    else return -1;
+    /* compare sizes and locations; only needed with more than 2 monitors... */
+    GdkRectangle geom;
+    gdk_screen_get_monitor_geometry (scr, gdk_mon_num, &geom);
+
+    /* sanity check the table */
+    for (i = 0; i < MAX_MONS; i++)
+    {
+        if (mon_sizes[i].width == 0 && mon_sizes[i].height == 0) break;
+    }
+
+    if (i == nmons)
+    {
+        for (i = 0; i < nmons; i++)
+        {
+            if (geom.x == mon_sizes[i].x && geom.y == mon_sizes[i].y &&
+                geom.width == mon_sizes[i].width && geom.height == mon_sizes[i].height)
+                    return i;
+        }
+    }
+
+    /* last chance - reload the table just in case */
+    read_monitor_sizes ();
+    for (i = 0; i < nmons; i++)
+    {
+        if (geom.x == mon_sizes[i].x && geom.y == mon_sizes[i].y &&
+            geom.width == mon_sizes[i].width && geom.height == mon_sizes[i].height)
+                return i;
+    }
+
+    return -1;
 }
 
 int gdk_mon_num_for_desktop (FmDesktop *desk)
