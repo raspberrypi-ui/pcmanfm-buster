@@ -2823,6 +2823,25 @@ static void update_working_area(FmDesktop* desktop)
     }
     working_area = ((gulong*)prop) + cur_desktop * 4;
 
+    int twidth = gdk_screen_get_width (screen);
+    int theight = gdk_screen_get_height (screen);
+    desktop->working_area.x = 0;
+    desktop->working_area.width = geom.width;
+    if ((gint) working_area[2] < twidth)
+    {
+        if ((gint) working_area[0] > 0) desktop->working_area.x = (gint) working_area[0];
+        desktop->working_area.width -= (twidth - (gint) working_area[2]);
+    }
+
+    desktop->working_area.y = 0;
+    desktop->working_area.height = geom.height;
+    if ((gint) working_area[3] < theight)
+    {
+        if ((gint) working_area[1] > 0) desktop->working_area.y = (gint) working_area[1];
+        desktop->working_area.height -= (theight - (gint) working_area[3]);
+    }
+
+#if 0
     desktop->working_area.x = (gint)working_area[0] - geom.x;
     desktop->working_area.y = (gint)working_area[1] - geom.y;
     if(desktop->working_area.x > 0 &&
@@ -2840,6 +2859,7 @@ static void update_working_area(FmDesktop* desktop)
     /* we need working area coordinates within the monitor not the screen */
     desktop->working_area.x = MAX(0, desktop->working_area.x);
     desktop->working_area.y = MAX(0, desktop->working_area.y);
+#endif
 
     XFree(prop);
 _out:
