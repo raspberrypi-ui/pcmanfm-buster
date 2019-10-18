@@ -214,7 +214,6 @@ static GSList *mounts = NULL;
 
 void read_monitor_sizes (void)
 {
-    printf ("loading monitor size table\n");
     for (int i = 0; i <= MAX_MONS; i++)
     {
         mon_sizes[i].width = 0;
@@ -230,7 +229,6 @@ void read_monitor_sizes (void)
     {
         if (sscanf (line, " %d: %*s %d/%*dx%d/%*d+%d+%d", &mon, &w, &h, &x, &y) == 5)
         {
-            printf ("mon %d w %d h %d x %d y %d\n", mon, w, h, x, y);
             if (mon < MAX_MONS)
             {
                 mon_sizes[mon].width = w;
