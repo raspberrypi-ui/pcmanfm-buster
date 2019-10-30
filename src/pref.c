@@ -879,7 +879,7 @@ void fm_edit_preference( GtkWindow* parent, int page )
         INIT_BOOL(builder, FmConfig, places_root, NULL);
         INIT_BOOL(builder, FmConfig, places_computer, NULL);
         INIT_BOOL(builder, FmConfig, places_network, NULL);
-        if (!fm_config->cutdown_menus)
+        if (!fm_config->cutdown_menus || fm_config->cutdown_places)
         gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(builder, "vbox_places")));
 #endif
 

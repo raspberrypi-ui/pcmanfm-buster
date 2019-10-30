@@ -940,7 +940,10 @@ static void fm_tab_page_init(FmTabPage *page)
     if (!fm_config->cutdown_menus)
     fm_side_pane_set_mode(page->side_pane, (mode & FM_SP_MODE_MASK));
     else
-    fm_side_pane_set_mode(page->side_pane, FM_SP_DIR_TREE);
+    {
+        if (fm_config->cutdown_places) fm_side_pane_set_mode(page->side_pane, FM_SP_HYBRID);
+        else fm_side_pane_set_mode(page->side_pane, FM_SP_DIR_TREE);
+    }
 #if FM_CHECK_VERSION(1, 2, 0)
     fm_side_pane_set_popup_updater(page->side_pane, _update_sidepane_popup, page);
     if (app_config->home_path && app_config->home_path[0])
@@ -1185,6 +1188,15 @@ void fm_tab_page_set_show_hidden(FmTabPage* page, gboolean show_hidden)
     g_signal_emit(page, signals[STATUS], 0,
                   (guint)FM_STATUS_TEXT_NORMAL,
                   page->status_text[FM_STATUS_TEXT_NORMAL]);
+}
+
+void fm_tab_page_set_show_places (FmTabPage* page, gboolean show_places)
+{
+    fm_config->cutdown_places = show_places;
+    if (fm_config->cutdown_places)
+        fm_side_pane_set_mode (page->side_pane, FM_SP_HYBRID);
+    else
+        fm_side_pane_set_mode (page->side_pane, FM_SP_DIR_TREE);
 }
 
 FmPath* fm_tab_page_get_cwd(FmTabPage* page)

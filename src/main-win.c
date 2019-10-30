@@ -97,6 +97,7 @@ static void on_filter(GtkAction* act, FmMainWin* win);
 static void on_clear_filter(GtkAction* act, FmMainWin* win);
 #endif
 static void on_show_hidden(GtkToggleAction* act, FmMainWin* win);
+static void on_show_places(GtkToggleAction* act, FmMainWin* win);
 #if FM_CHECK_VERSION(1, 2, 0)
 static void on_mingle_dirs(GtkToggleAction* act, FmMainWin* win);
 #endif
@@ -335,6 +336,8 @@ static void update_view_menu(FmMainWin* win)
     gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), fm_folder_view_get_show_hidden(fv));
     if (fm_config->cutdown_menus)
     {
+        act = gtk_ui_manager_get_action (win->ui, "/menubar/ViewMenu/ShowPlaces");
+        gtk_toggle_action_set_active (GTK_TOGGLE_ACTION(act), fm_config->cutdown_places);
         GtkToolItem *item = NULL;
         switch (fm_standard_view_get_mode (FM_STANDARD_VIEW (fv)))
         {
@@ -680,6 +683,7 @@ static void on_side_pane_mode_changed(FmSidePane* sp, FmMainWin* win)
     mode = fm_side_pane_get_mode(sp);
 
     /* update menu */
+    if (!fm_config->cutdown_menus)
     gtk_radio_action_set_current_value(win->first_side_pane_mode, mode);
 
     if(mode != (app_config->side_pane_mode & FM_SP_MODE_MASK))
@@ -1387,6 +1391,18 @@ static void on_show_hidden(GtkToggleAction* act, FmMainWin* win)
 
     active = gtk_toggle_action_get_active(act);
     fm_tab_page_set_show_hidden(page, active);
+}
+
+static void on_show_places (GtkToggleAction* act, FmMainWin* win)
+{
+    FmTabPage* page = win->current_page;
+    gboolean active;
+
+    if (!page) return;
+
+    active = gtk_toggle_action_get_active (act);
+    fm_tab_page_set_show_places (page, active);
+    pcmanfm_save_config (FALSE);
 }
 
 static void on_fullscreen(GtkToggleAction* act, FmMainWin* win)
@@ -2560,7 +2576,10 @@ static void on_notebook_switch_page(GtkNotebook* nb, gpointer* new_page, guint n
         fm_side_pane_set_mode(win->side_pane,
                               (app_config->side_pane_mode & FM_SP_MODE_MASK));
         else
-            fm_side_pane_set_mode(win->side_pane, FM_SP_DIR_TREE);
+        {
+            if (fm_config->cutdown_places) fm_side_pane_set_mode(page->side_pane, FM_SP_HYBRID);
+            else fm_side_pane_set_mode(page->side_pane, FM_SP_DIR_TREE);
+        }
         gtk_widget_show_all(GTK_WIDGET(win->side_pane));
     }
 
