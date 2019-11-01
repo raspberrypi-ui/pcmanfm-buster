@@ -213,8 +213,6 @@ static const char main_menu_cutdown_xml[] =
   "<menu action='ViewMenu'>"
     "<menuitem action='Reload'/>"
     "<separator/>"
-    "<menuitem action='ShowPlaces'/>"
-    "<separator/>"
     "<menuitem action='ShowHidden'/>"
     "<separator/>"
     "<menuitem action='SizeBigger'/>"
@@ -369,7 +367,6 @@ static GtkToggleActionEntry main_win_toggle_actions[]=
     {"SortIgnoreCase", NULL, N_("_Ignore Name Case"), NULL, NULL, G_CALLBACK(on_sort_ignore_case), TRUE},
 #endif
     {"ShowHidden", NULL, N_("Sho_w Hidden"), "<Ctrl>H", NULL, G_CALLBACK(on_show_hidden), FALSE},
-    {"ShowPlaces", NULL, N_("Show _Places"), "<Ctrl>P", NULL, G_CALLBACK(on_show_places), FALSE},
     /* Note to translators: this save is meant for folder's settings such as sort */
     {"SavePerFolder", NULL, N_("Preserve This Folder's Settings"), NULL,
             N_("Check to remember view and sort as folder setting rather than global one"),

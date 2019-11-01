@@ -97,7 +97,6 @@ static void on_filter(GtkAction* act, FmMainWin* win);
 static void on_clear_filter(GtkAction* act, FmMainWin* win);
 #endif
 static void on_show_hidden(GtkToggleAction* act, FmMainWin* win);
-static void on_show_places(GtkToggleAction* act, FmMainWin* win);
 #if FM_CHECK_VERSION(1, 2, 0)
 static void on_mingle_dirs(GtkToggleAction* act, FmMainWin* win);
 #endif
@@ -336,8 +335,6 @@ static void update_view_menu(FmMainWin* win)
     gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), fm_folder_view_get_show_hidden(fv));
     if (fm_config->cutdown_menus)
     {
-        act = gtk_ui_manager_get_action (win->ui, "/menubar/ViewMenu/ShowPlaces");
-        gtk_toggle_action_set_active (GTK_TOGGLE_ACTION(act), fm_config->cutdown_places);
         GtkToolItem *item = NULL;
         switch (fm_standard_view_get_mode (FM_STANDARD_VIEW (fv)))
         {
@@ -1391,18 +1388,6 @@ static void on_show_hidden(GtkToggleAction* act, FmMainWin* win)
 
     active = gtk_toggle_action_get_active(act);
     fm_tab_page_set_show_hidden(page, active);
-}
-
-static void on_show_places (GtkToggleAction* act, FmMainWin* win)
-{
-    FmTabPage* page = win->current_page;
-    gboolean active;
-
-    if (!page) return;
-
-    active = gtk_toggle_action_get_active (act);
-    fm_tab_page_set_show_places (page, active);
-    pcmanfm_save_config (FALSE);
 }
 
 static void on_fullscreen(GtkToggleAction* act, FmMainWin* win)

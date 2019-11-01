@@ -685,6 +685,16 @@ static void on_show_status (GtkToggleButton *act, FmMainWin *win)
     gtk_widget_set_visible(GTK_WIDGET(win->statusbar), app_config->show_statusbar);
 }
 
+static void on_show_places (GtkToggleButton* act, FmMainWin* win)
+{
+    FmTabPage* page = win->current_page;
+    if (!page) return;
+    gboolean active = gtk_toggle_button_get_active (act);
+    fm_config->cutdown_places = active;
+    fm_tab_page_set_show_places (page, active);
+    pcmanfm_save_config (FALSE);
+}
+
 static void on_show_side_pane(GtkToggleButton* act, FmMainWin* win)
 {
     gboolean active;
@@ -879,7 +889,6 @@ void fm_edit_preference( GtkWindow* parent, int page )
         INIT_BOOL(builder, FmConfig, places_root, NULL);
         INIT_BOOL(builder, FmConfig, places_computer, NULL);
         INIT_BOOL(builder, FmConfig, places_network, NULL);
-        if (!fm_config->cutdown_menus || fm_config->cutdown_places)
         gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(builder, "vbox_places")));
 #endif
 
@@ -1099,6 +1108,11 @@ void fm_edit_preference( GtkWindow* parent, int page )
         gtk_widget_set_visible (GTK_WIDGET(obj), fm_config->cutdown_menus);
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(obj), app_config->show_statusbar);
         g_signal_connect (obj, "toggled", G_CALLBACK(on_show_status), win);
+
+        obj = gtk_builder_get_object (builder, "show_places");
+        gtk_widget_set_visible (GTK_WIDGET(obj), fm_config->cutdown_menus);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(obj), fm_config->cutdown_places);
+        g_signal_connect (obj, "toggled", G_CALLBACK(on_show_places), win);
 
         obj = gtk_builder_get_object (builder, "show_sidebar");
         gtk_widget_set_visible (GTK_WIDGET(obj), fm_config->cutdown_menus);
