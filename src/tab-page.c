@@ -851,8 +851,6 @@ static void update_files_popup(FmFolderView* fv, GtkWindow* win,
     gtk_ui_manager_add_ui_from_string(ui, folder_menu_cutdown_xml, -1, NULL);
     if (!all_native)
         gtk_action_set_visible(gtk_action_group_get_action(act_grp, "Term"), FALSE);
-    if (fm_config->cutdown_menus)
-        gtk_action_set_visible(gtk_action_group_get_action(act_grp, "AddBookmark"), FALSE);
 }
 
 static gboolean open_folder_func(GAppLaunchContext* ctx, GList* folder_infos, gpointer user_data, GError** err)
@@ -898,8 +896,6 @@ void _update_sidepane_popup(FmSidePane* sp, GtkUIManager* ui,
     gtk_ui_manager_add_ui_from_string(ui, folder_menu_cutdown_xml, -1, NULL);
     if (!pcmanfm_can_open_path_in_terminal(fm_file_info_get_path(file)))
         gtk_action_set_visible(gtk_action_group_get_action(act_grp, "Term"), FALSE);
-    if (fm_config->cutdown_menus)
-        gtk_action_set_visible(gtk_action_group_get_action(act_grp, "AddBookmark"), FALSE);
 }
 #endif
 
