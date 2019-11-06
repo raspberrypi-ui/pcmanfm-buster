@@ -45,6 +45,7 @@
 
 static GtkWindow* pref_dlg = NULL;
 static GtkNotebook* notebook = NULL;
+static GtkWidget *places_box;
 /*
 static GtkWidget* icon_size_combo[3] = {0};
 static GtkWidget* bookmark_combo = NULL
@@ -692,6 +693,7 @@ static void on_show_places (GtkToggleButton* act, FmMainWin* win)
     gboolean active = gtk_toggle_button_get_active (act);
     fm_config->cutdown_places = active;
     fm_tab_page_set_show_places (page, active);
+    gtk_widget_set_sensitive (places_box, fm_config->cutdown_places);
     pcmanfm_save_config (FALSE);
 }
 
@@ -877,7 +879,16 @@ void fm_edit_preference( GtkWindow* parent, int page )
         }
 
 #if FM_CHECK_VERSION(1, 0, 2)
-        INIT_BOOL(builder, FmConfig, no_child_non_expandable, NULL);
+        if (fm_config->cutdown_menus)
+        {
+            INIT_BOOL(builder, FmConfig, real_expanders, NULL);
+            gtk_widget_hide (GTK_WIDGET(gtk_builder_get_object(builder, "no_child_non_expandable")));
+        }
+        else
+        {
+            INIT_BOOL(builder, FmConfig, no_child_non_expandable, NULL);
+            gtk_widget_hide (GTK_WIDGET(gtk_builder_get_object(builder, "real_expanders")));
+        }
         gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(builder, "vbox_dir_tree")));
 #endif
 
@@ -889,7 +900,11 @@ void fm_edit_preference( GtkWindow* parent, int page )
         INIT_BOOL(builder, FmConfig, places_root, NULL);
         INIT_BOOL(builder, FmConfig, places_computer, NULL);
         INIT_BOOL(builder, FmConfig, places_network, NULL);
-        gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(builder, "vbox_places")));
+        INIT_BOOL(builder, FmConfig, places_volmounts, NULL);
+        places_box = GTK_WIDGET(gtk_builder_get_object(builder, "vbox_places"));
+        gtk_widget_show (places_box);
+        if (fm_config->cutdown_menus)
+            gtk_widget_set_sensitive (GTK_WIDGET(gtk_builder_get_object(builder, "vbox_places")), fm_config->cutdown_places);
 #endif
 
         INIT_BOOL(builder, FmConfig, cutdown_menus, NULL);
