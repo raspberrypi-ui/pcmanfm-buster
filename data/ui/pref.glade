@@ -1167,7 +1167,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkCheckButton" id="cutdown_menus">
-                                    <property name="label" translatable="yes">Display simplified user interface and menus</property>
+                                    <property name="label" translatable="yes">Display simplified _user interface and menus</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -1287,7 +1287,7 @@
                             <property name="left_padding">12</property>
                             <child>
                               <object class="GtkCheckButton" id="real_expanders">
-                                <property name="label" translatable="yes">Only show expanders for folders with subfolders</property>
+                                <property name="label" translatable="yes">Only show _expanders for folders with subfolders</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
