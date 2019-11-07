@@ -887,7 +887,7 @@ void fm_edit_preference( GtkWindow* parent, int page )
         else
         {
             INIT_BOOL(builder, FmConfig, no_child_non_expandable, NULL);
-            gtk_widget_hide (GTK_WIDGET(gtk_builder_get_object(builder, "real_expanders")));
+            INIT_BOOL(builder, FmConfig, real_expanders, NULL);
         }
         gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(builder, "vbox_dir_tree")));
 #endif
