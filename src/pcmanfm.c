@@ -371,7 +371,9 @@ gboolean pcmanfm_run(gint screen_num)
         }
         else if(reconfigure)
         {
-            fm_desktop_reconfigure(NULL);
+            fm_desktop_reconfigure (NULL);
+            fm_config_load_from_file (fm_config, NULL);
+            fm_places_reload ();
             reconfigure = FALSE;
             return TRUE;
         }
