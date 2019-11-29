@@ -42,7 +42,7 @@
 
 #include "gseal-gtk-compat.h"
 
-#define VIEW_TAB_LOC 2
+#define VIEW_TAB_LOC 4
 
 #if GTK_CHECK_VERSION(3, 0, 0)
 static void fm_main_win_destroy(GtkWidget *object);
