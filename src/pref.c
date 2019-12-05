@@ -827,7 +827,13 @@ void fm_edit_preference( GtkWindow* parent, int page )
         INIT_BOOL_SHOW(builder, FmConfig, quick_exec, NULL);
 #endif
 
+        if (!fm_config->cutdown_menus)
         INIT_COMBO(builder, FmAppConfig, bm_open_method, NULL);
+        else
+        {
+            gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(builder, "bm_open_method")));
+            gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(builder, "label2")));
+        }
 #if FM_CHECK_VERSION(1, 2, 0)
         init_drop_default_action_combo(builder);
         gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(builder, "drop_default_action")));
@@ -835,6 +841,7 @@ void fm_edit_preference( GtkWindow* parent, int page )
         INIT_BOOL_SHOW(builder, FmConfig, smart_desktop_autodrop, NULL);
         INIT_BOOL_SHOW(builder, FmAppConfig, focus_previous, NULL);
 #endif
+        if (!fm_config->cutdown_menus)
         INIT_BOOL_SHOW(builder, FmAppConfig, change_tab_on_drop, NULL);
         if (!fm_config->cutdown_menus)
         gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(builder, "on_unmount_vbox")));
