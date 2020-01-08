@@ -283,7 +283,7 @@ static GtkActionEntry main_win_actions[]=
             {"NewFolder", "folder", N_("Folder"), "<Ctrl><Shift>N", NULL, G_CALLBACK(bounce_action)},
             {"NewBlank", NULL, N_("Empty File"), "<Ctrl><Alt>N", NULL, G_CALLBACK(bounce_action)},
         {"CrNewFolder", "folder-new", N_("New _Folder..."), "<Ctrl><Shift>N", N_("Create new folder"), G_CALLBACK(bounce_action)},
-        {"CrNewBlank", NULL, N_("New F_ile..."), "<Ctrl><Alt>N", N_("Create new empty file"), G_CALLBACK(bounce_action)},
+        {"CrNewBlank", NULL, N_("New Fil_e..."), "<Ctrl><Alt>N", N_("Create new empty file"), G_CALLBACK(bounce_action)},
         {"Prop", GTK_STOCK_PROPERTIES, N_("Folder Propertie_s"), NULL, NULL, G_CALLBACK(bounce_action)},
         {"CloseTab", GTK_STOCK_CLOSE, N_("_Close Tab"), "<Ctrl>W", NULL, G_CALLBACK(on_close_tab)},
         {"Close", GTK_STOCK_QUIT, N_("Close _Window"), "<Ctrl>Q", NULL, G_CALLBACK(on_close_win)},
