@@ -997,7 +997,7 @@ static void fm_main_win_init(FmMainWin *win)
 #if FM_CHECK_VERSION(1, 2, 0)
     /* create history button after 'Prev' and add a popup menu to it */
     toolitem = fm_menu_tool_item_new();
-    gtk_toolbar_insert(win->toolbar, toolitem, fm_config->cutdown_menus ? 6 : 3);
+    gtk_toolbar_insert(win->toolbar, toolitem, fm_config->cutdown_menus ? 8 : 3);
 #else
     /* create 'Prev' button manually and add a popup menu to it */
     toolitem = (GtkToolItem*)g_object_new(GTK_TYPE_MENU_TOOL_BUTTON, NULL);
