@@ -1326,10 +1326,13 @@ static AtkStateSet *fm_desktop_item_accessible_ref_state_set(AtkObject *obj)
         else
             atk_state_set_remove_state(item->state_set, ATK_STATE_FOCUSED);
     }
+    if (item->item != NULL)
+    {
     if (item->item->is_selected)
         atk_state_set_add_state(item->state_set, ATK_STATE_SELECTED);
     else
         atk_state_set_remove_state(item->state_set, ATK_STATE_SELECTED);
+    }
     return g_object_ref(item->state_set);
 }
 
