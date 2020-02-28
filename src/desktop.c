@@ -224,7 +224,8 @@ void read_monitor_sizes (void)
 
     FILE *fp = popen ("xrandr --listmonitors", "r");
     char *line = NULL;
-    int len = 0, mon, w, h, x, y;
+    size_t len = 0;
+    int mon, w, h, x, y;
     while (getline (&line, &len, fp) != -1)
     {
         if (sscanf (line, " %d: %*s %d/%*dx%d/%*d+%d+%d", &mon, &w, &h, &x, &y) == 5)
