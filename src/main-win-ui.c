@@ -330,7 +330,7 @@ static GtkActionEntry main_win_actions[]=
         {"Home", "user-home", N_("H_ome Folder"), "<Alt>Home", N_("Go to home folder"), G_CALLBACK(on_go_home)},
         {"Desktop", "user-desktop", N_("_Desktop"), NULL, N_("Go to desktop folder"), G_CALLBACK(on_go_desktop)},
         {"Trash", "user-trash", N_("_Trash Can"), NULL, N_("Open trash can"), G_CALLBACK(on_go_trash)},
-        {"Root", "drive-harddisk", N_("Filesyste_m Root"), NULL, N_("Go fo filesystem root"), NULL},
+        {"Root", "drive-harddisk", N_("Filesyste_m Root"), NULL, N_("Go to filesystem root"), NULL},
         {"Apps", "system-software-install", N_("_Applications"), NULL, N_("Go to root of applications menu folder"), G_CALLBACK(on_go_apps)},
         {"Computer", "computer", N_("Dev_ices"), NULL, N_("Go to list of devices connected to the computer"), G_CALLBACK(on_go_computer)},
         {"Network", GTK_STOCK_NETWORK, N_("Net_work"), NULL, N_("Go to list of places on the network"), G_CALLBACK(on_go_network)},
